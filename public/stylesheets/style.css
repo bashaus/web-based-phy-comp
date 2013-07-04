@@ -1,0 +1,63 @@
+button {
+    cursor: pointer;
+}
+
+button,
+.incoming {
+    border: none;
+    background-color: #DDD;
+
+    width: 300px;
+    height: 250px;
+    margin: 25px;
+
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    border-radius: 40px;
+
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+button:before,
+.incoming:before {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 50px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+    border-radius: 25px;
+    margin: 0 auto;
+    margin-bottom: 20px;
+}
+
+button:active {
+    background-color: #EEE;
+}
+
+.turn-off:before {
+    background-color: #333;
+}
+
+.turn-on:before {
+    background-color: #FFF;
+}
+
+/* incoming */
+
+.incoming {
+    height: 50px;
+    width: 650px;
+}
+
+.incoming:before {
+    margin-left: 0px;
+    background-color: #666;
+    transition: margin-left 2s;
+    -webkit-transition: margin-left 2s; /* Safari */
+}
+
+.incoming.clicked:before {
+    margin-left: 600px;
+}

@@ -10,6 +10,6 @@
     });
 
     socket.on('click', function(data) {
-        alert(data);
+        $('.incoming').addClass('clicked');
     });
 })(jQuery);
