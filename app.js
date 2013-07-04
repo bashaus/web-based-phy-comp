@@ -1,64 +1,50 @@
-// Include all dependencies
 var express = require('express'),
     routes = require('./routes'),
     sio = require('socket.io'),
-    gpio = require('pi-gpio'),
-    crypto = require('crypto'),
-    async = require('async'),
     app = module.exports = express.createServer(),
-    io = sio.listen(app);
+    io = sio.listen(app),
+    Gpio = require('onoff').Gpio;
 
-// Constants
-var LIGHT_PIN = 11;
-
-// Configuration
 app.configure(function() {
     app.set('views', __dirname + '/views');
     app.set('view engine', 'ejs');
-
     app.use(express.bodyParser());
     app.use(express.methodOverride());
     app.use(app.router);
     app.use(express.static(__dirname + '/public'));
     app.use(express.errorHandler({
-        dumpExceptions: true, 
+        dumpExceptions: true,
         showStack: true
     }));
 });
 
-// Routes
 app.get('/', routes.index);
-
-// Start the server
 app.listen(3000);
-console.log('Listening on port %d', app.address().port);
 
-var light = {};
+var light = { PIN : 22, GPIO : null };
+var button = { PIN : 23, GPIO : null };
+
 light.init = function() {
-    async.parallel([
-        gpio.open(LIGHT_PIN)
-    ]);
+    light.GPIO = new Gpio(light.PIN, 'out');
 };
 
 light.turnOn = function() {
-    console.log("Turn on");
-    async.parallel([
-        gpio.write(LIGHT_PIN, 1)
-    ]);
+    light.GPIO.write(1);
 };
 
 light.turnOff = function() {
-    console.log("Turn off");
-    async.parallel([
-        gpio.write(LIGHT_PIN, 0)
-    ]);
+    light.GPIO.write(0);
 };
 
-// Sockets
 io.sockets.on('connection', function(socket) {
     socket.on('turnOn', light.turnOn);
     socket.on('turnOff', light.turnOff);
+
+    button.GPIO = new Gpio(button.PIN, 'in', 'both');
+    button.GPIO.watch(function(err, val) {
+        if (err) throw err;
+        socket.emit('click', val);
+    });
 });
 
 light.init();
-

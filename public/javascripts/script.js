@@ -8,5 +8,8 @@
     $('.turn-off').click(function() {
         socket.emit('turnOff');
     });
-})(jQuery);
 
+    socket.on('click', function(data) {
+        alert(data);
+    });
+})(jQuery);
